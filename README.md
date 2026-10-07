@@ -1,5 +1,5 @@
 ```markdown
-# ⬢ NEUTRA · ARCHIVE // SECTOR 7G
+  ⬢ NEUTRA · ARCHIVE // SECTOR 7G
 
 > 🔍 One file. Every tool you need to dig through public data.
 > No npm. No pip. No docker. Just Python and a browser.
@@ -15,7 +15,7 @@
 
 ---
 
-## ⚡ What is this
+   ⚡ What is this
 
 NEUTRA is a single Python file that turns into a full OSINT dashboard when you run it. It gives you 70+ tools in one screen. You feed it a target. It fires every relevant module at once, ranks the results, and draws you a graph of everything it found.
 
@@ -23,7 +23,7 @@ You get one HTML file for the UI and one Python file for the brain. That is it.
 
 ---
 
-## 🎯 What you can throw at it
+   🎯 What you can throw at it
 
 | Symbol | Type | Example |
 |--------|------|---------|
@@ -44,7 +44,7 @@ Type it in the box. Hit scan. Done.
 
 ---
 
-## 🧠 How it works
+   🧠 How it works
 
 ```
    YOU  ──►  type target
@@ -79,34 +79,34 @@ Every result gets a **confidence score**. Every finding becomes a **pivot** you 
 
 ---
 
-## 🗂️ Categories
+   🗂️ Categories
 
-### 🌐 Domain
+    🌐 Domain
 Dig into any website. DNS records, TLS certificates, subdomains, who registered it, where it is hosted, what tech it runs on, whether its email is spoofable.
 
 Modules: `dns` `certs` `crt_history` `subdomains` `rdap` `hosting` `wayback` `wayback_cdx` `archive_today` `emailsec` `headers` `robots` `tech` `mx_provider`
 
-### 📡 Network
+    📡 Network
 Everything about an IP. Where it lives, who owns it, is it a VPN or proxy, does it have open ports, is it malicious.
 
 Modules: `ipgeo` `iprdap` `asn` `ip_abuse` `reverse_dns` `shodan_idb` `greynoise`
 
-### 📧 Email
+    📧 Email
 Is this address real. Has it leaked. What sites use it. Any infostealer malware grabbed it. Any fraud signals.
 
 Modules: `email_breach` `people_email` `gravatar` `email_disposable` `email_mx` `emailrep` `hunter_io` `ipqs_email` `breach_directory` `hudson_rock_email`
 
-### 👤 Username
+    👤 Username
 Hunt a handle across dozens of platforms. Global sites, regional sites (VK, Weibo, Bilibili), and dev sites (GitLab, NPM, PyPI).
 
 Modules: `social_username` `username_regional` `username_dev` `username_archives` `footprint`
 
-### 📞 Phone
+    📞 Phone
 Where does this number live. What carrier. Is it a real line or a burner. Any fraud flags.
 
 Modules: `phone` `phone_carrier` `veriphone` `ipqs_phone`
 
-### 🧑 People ⟵ NEW
+    🧑 People ⟵ NEW
 Public-records style digging. Sanctions lists, court records, SEC filings, campaign donations, corporate officers, name demographics.
 
 Modules:
@@ -125,54 +125,54 @@ Modules:
 - `social_analyzer` — username with confidence
 - `whatsmyname` — community platform list
 
-### 🐛 Threat
+    🐛 Threat
 CVE details, IOC lookups, malware samples, url scans.
 
 Modules: `cve` `hashid` `urlscan_search` `otx_lookup` `urlhaus` `threatfox` `malwarebazaar`
 
-### 💰 Crypto
+    💰 Crypto
 Wallet balances and activity.
 
 Modules: `crypto_eth` `crypto_btc` `sanctions`
 
-### 🔍 Search
+    🔍 Search
 Wikipedia, GitHub, dork builders, reverse geocode.
 
 Modules: `wikipedia` `github_search` `github_code` `dork` `reverse`
 
 ---
 
-## 💻 Install on Windows (PowerShell)
+   💻 Install on Windows (PowerShell)
 
 This is the easy path. Copy and paste.
 
-### 📥 Option 1 — One shot installer
+    📥 Option 1 — One shot installer
 
 Open **PowerShell as Administrator** and paste this:
 
 ```powershell
-# Make a folder for it
+  Make a folder for it
 New-Item -ItemType Directory -Force -Path "$HOME\neutra" | Out-Null
 Set-Location "$HOME\neutra"
 
-# Grab the files (replace with your real URLs when hosted)
+  Grab the files (replace with your real URLs when hosted)
 Invoke-WebRequest -Uri "https://your-host/neutra.py" -OutFile "neutra.py"
 Invoke-WebRequest -Uri "https://your-host/UI.html"   -OutFile "UI.html"
 
-# Check Python exists
+  Check Python exists
 $py = (Get-Command python -ErrorAction SilentlyContinue)
 if (-not $py) {
     Write-Host "Python not found. Installing via winget..." -ForegroundColor Yellow
     winget install -e --id Python.Python.3.12 --accept-source-agreements --accept-package-agreements
-    # Refresh PATH in this session
+      Refresh PATH in this session
     $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 }
 
-# Run it
+  Run it
 python .\neutra.py
 ```
 
-### 📥 Option 2 — Step by step
+    📥 Option 2 — Step by step
 
 **1. Install Python** (if you do not have it)
 
@@ -201,7 +201,7 @@ python .\neutra.py
 
 Browser opens by itself to `http://127.0.0.1:8765`.
 
-### 🔑 Option 3 — With API keys
+    🔑 Option 3 — With API keys
 
 ```powershell
 $env:GITHUB_TOKEN   = "ghp_yourtoken"
@@ -216,7 +216,7 @@ $env:NEUTRA_AUTH    = "admin:secretpass"
 python .\neutra.py
 ```
 
-### 🧷 Option 4 — Make a shortcut
+    🧷 Option 4 — Make a shortcut
 
 Create `start-neutra.bat` next to the files:
 
@@ -229,7 +229,7 @@ pause
 
 Double click it. Done.
 
-### 🌐 Option 5 — Run without opening a browser
+    🌐 Option 5 — Run without opening a browser
 
 ```powershell
 python .\neutra.py --no-browser
@@ -237,7 +237,7 @@ python .\neutra.py --no-browser
 
 Then open `http://127.0.0.1:8765` yourself.
 
-### 🛑 Firewall prompt
+    🛑 Firewall prompt
 
 First run, Windows might ask. Click **Allow** for private networks. If you do not want it on the network, run with:
 
@@ -246,7 +246,7 @@ $env:NEUTRA_HOST = "127.0.0.1"
 python .\neutra.py
 ```
 
-### 🧹 Uninstall
+    🧹 Uninstall
 
 ```powershell
 Remove-Item -Recurse -Force $HOME\neutra
@@ -256,7 +256,7 @@ That is everything. No registry junk. No services. Just a folder.
 
 ---
 
-## 🐧 Install on Linux / macOS
+   🐧 Install on Linux / macOS
 
 ```bash
 git clone <your-repo> neutra && cd neutra
@@ -274,17 +274,17 @@ python3 neutra.py
 
 ---
 
-## 🎛️ Environment variables
+   🎛️ Environment variables
 
 All optional. Set the ones you have.
 
 ```bash
-# Server
+  Server
 export PORT=8765
 export NEUTRA_HOST=0.0.0.0
 export NEUTRA_AUTH="admin:secretpass"
 
-# API keys (unlock premium tiers)
+  API keys (unlock premium tiers)
 export GITHUB_TOKEN=ghp_xxxxx
 export NUMVERIFY_KEY=xxxxx
 export VERIPHONE_KEY=xxxxx
@@ -306,7 +306,7 @@ Run without any keys. Most modules still work.
 
 ---
 
-## ⌨️ Keyboard shortcuts
+   ⌨️ Keyboard shortcuts
 
 | Key | What it does |
 |-----|--------------|
@@ -317,7 +317,7 @@ Run without any keys. Most modules still work.
 
 ---
 
-## 🖥️ The UI
+   🖥️ The UI
 
 Monochrome. Robotic. Built for focus.
 
@@ -340,7 +340,7 @@ Run an AI investigation and you get:
 
 ---
 
-## 📁 Where data goes
+   📁 Where data goes
 
 Everything lives in `neutra_data/` next to the script.
 
@@ -361,7 +361,7 @@ C:\Users\<you>\neutra\neutra_data\
 
 ---
 
-## 🔒 Auth mode
+   🔒 Auth mode
 
 Want to expose this on a network? Set a password.
 
@@ -380,7 +380,7 @@ Every request needs HTTP Basic auth. Health check stays open.
 
 ---
 
-## 🛡️ Legal and ethics
+   🛡️ Legal and ethics
 
 Every module here hits **public data only**. No scraping private databases. No credential stuffing. No bypassing anything.
 
@@ -398,7 +398,7 @@ Check your local laws. GDPR, CCPA, and similar rules apply. When in doubt, ask y
 
 ---
 
-## 📦 Requirements
+   📦 Requirements
 
 - Python 3.8 or newer
 - Standard library only (no pip install needed)
@@ -408,7 +408,7 @@ That is it. No node_modules. No virtual env. No build step.
 
 ---
 
-## 🎨 Module breakdown
+   🎨 Module breakdown
 
 Want to see everything at once? Open `/api/catalog` in your browser while the server runs.
 
@@ -420,7 +420,7 @@ You get back a JSON of every module, its category, its weight, and what inputs i
 
 ---
 
-## 🧪 API endpoints
+   🧪 API endpoints
 
 The whole thing is a REST API. Hack on it.
 
@@ -440,7 +440,7 @@ The whole thing is a REST API. Hack on it.
 
 ---
 
-## 🎬 Quick examples
+   🎬 Quick examples
 
 **Hunt a username:**
 ```
@@ -473,7 +473,7 @@ result: sanctions, court records, SEC filings, donations, corporate roles
 
 ---
 
-## 🛠️ Adding your own module
+   🛠️ Adding your own module
 
 Drop a function in the file. Register it. Restart. Done.
 
@@ -489,7 +489,7 @@ That is the whole pattern.
 
 ---
 
-## 🧯 Troubleshooting
+   🧯 Troubleshooting
 
 **Browser does not open**
 Run with `--no-browser` and go to the URL yourself.
@@ -521,7 +521,7 @@ Some free APIs cap you. Wait a minute.
 
 ---
 
-## 🏴 Final notes
+   🏴 Final notes
 
 Built for researchers, journalists, and security folks who want one tool that does a lot without installing anything.
 
