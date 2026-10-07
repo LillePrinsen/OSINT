@@ -1,0 +1,1374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NEUTRA · SECTOR 7G</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23000'/%3E%3Cpath d='M20 48 V16 L44 48 V16' fill='none' stroke='%23fff' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#000000;
+  --bg2:#050505;
+  --panel:#0a0a0a;
+  --panel2:#111111;
+  --panel3:#181818;
+  --line:#1c1c1c;
+  --line2:#2a2a2a;
+  --line3:#3a3a3a;
+  --text:#e8e8e8;
+  --dim:#6a6a6a;
+  --dim2:#4a4a4a;
+  --accent:#ffffff;
+  --ok:#b8b8b8;
+  --warn:#d8d8d8;
+  --bad:#ffffff;
+  --radius:2px;
+  --fs:13px;
+  --mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+  --tech:'Share Tech Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--mono);
+  font-size:var(--fs);
+  line-height:1.55;
+  overflow:hidden;
+  font-weight:400;
+  letter-spacing:.01em;
+  -webkit-font-smoothing:antialiased;
+}
+/* CRT scanlines */
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:150;
+  background:repeating-linear-gradient(0deg,rgba(255,255,255,.018) 0px,rgba(255,255,255,.018) 1px,transparent 1px,transparent 3px);
+  mix-blend-mode:overlay;
+}
+/* vignette */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:149;
+  background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.55) 100%);
+}
+a{color:var(--text);text-decoration:none;border-bottom:1px dotted var(--line3)}
+a:hover{border-bottom-color:var(--text)}
+
+/* scrollbars */
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--line2);border:1px solid var(--bg)}
+::-webkit-scrollbar-thumb:hover{background:var(--line3)}
+
+/* layout */
+.app{display:grid;grid-template-columns:210px 1fr;grid-template-rows:56px 1fr;height:100vh}
+
+.top{
+  grid-column:1/3;grid-row:1;display:flex;align-items:center;gap:14px;
+  padding:0 18px;border-bottom:1px solid var(--line);background:var(--bg);
+  position:relative;z-index:5;
+}
+.top .brand{
+  font-family:var(--tech);font-weight:400;letter-spacing:.24em;
+  font-size:15px;color:var(--text);min-width:150px;
+  display:flex;align-items:center;gap:8px;
+}
+.top .brand .dot{
+  width:7px;height:7px;background:var(--accent);border-radius:50%;
+  animation:blink 1.4s steps(2,end) infinite;
+  box-shadow:0 0 8px rgba(255,255,255,.6);
+}
+@keyframes blink{50%{opacity:.15}}
+
+.top .searchwrap{flex:1;position:relative;display:flex;align-items:center}
+.top .searchwrap::before{
+  content:'>';position:absolute;left:12px;color:var(--dim2);
+  font-family:var(--tech);font-size:14px;pointer-events:none;
+}
+.top input{
+  width:100%;background:var(--bg2);border:1px solid var(--line);
+  color:var(--text);padding:9px 12px 9px 30px;
+  font-family:var(--mono);font-size:12.5px;
+  border-radius:var(--radius);outline:none;
+  transition:border-color .15s,background .15s;
+}
+.top input::placeholder{color:var(--dim2)}
+.top input:focus{border-color:var(--line3);background:#080808}
+
+.top .type{
+  font-family:var(--tech);font-size:10.5px;color:var(--dim);
+  letter-spacing:.14em;min-width:110px;text-transform:uppercase;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.top .type::before{content:'[';color:var(--dim2);margin-right:2px}
+.top .type::after{content:']';color:var(--dim2);margin-left:2px}
+
+button{
+  font-family:var(--tech);font-size:11px;cursor:pointer;
+  border:1px solid var(--line2);border-radius:var(--radius);
+  padding:9px 16px;background:transparent;color:var(--text);
+  letter-spacing:.14em;text-transform:uppercase;
+  transition:background .12s,border-color .12s,color .12s;
+}
+button:hover{background:var(--accent);color:#000;border-color:var(--accent)}
+button:active{transform:translateY(1px)}
+button.ghost{background:transparent;color:var(--dim);border-color:var(--line)}
+button.ghost:hover{background:transparent;color:var(--accent);border-color:var(--accent)}
+button.primary{background:var(--accent);color:#000;border-color:var(--accent);font-weight:400}
+button.primary:hover{background:#d8d8d8}
+
+.side{
+  grid-column:1;grid-row:2;border-right:1px solid var(--line);
+  background:var(--bg);overflow-y:auto;padding:14px 0;
+  position:relative;z-index:4;
+}
+.side .sect{
+  font-family:var(--tech);font-size:9.5px;color:var(--dim2);
+  letter-spacing:.22em;padding:8px 20px 6px;text-transform:uppercase;
+}
+.side button{
+  display:block;width:100%;text-align:left;background:transparent;
+  color:var(--dim);padding:8px 20px;border:none;border-radius:0;
+  font-weight:400;font-size:11.5px;letter-spacing:.1em;
+  font-family:var(--tech);text-transform:uppercase;
+  position:relative;transition:color .12s,background .12s,padding-left .15s;
+}
+.side button::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:2px;
+  background:transparent;transition:background .15s;
+}
+.side button:hover{background:var(--panel);color:var(--text);padding-left:24px}
+.side button.on{background:var(--panel);color:var(--accent);padding-left:24px}
+.side button.on::before{background:var(--accent);box-shadow:0 0 8px rgba(255,255,255,.5)}
+
+.main{grid-column:2;grid-row:2;overflow-y:auto;padding:26px 32px;position:relative;z-index:1}
+.main::-webkit-scrollbar{width:10px}
+
+/* typography */
+h2{
+  font-family:var(--tech);font-size:11px;color:var(--dim);
+  letter-spacing:.28em;text-transform:uppercase;
+  margin:26px 0 14px;font-weight:400;
+  display:flex;align-items:center;gap:10px;
+}
+h2:first-child{margin-top:0}
+h2::before{content:'▸';color:var(--accent)}
+h2::after{content:'';flex:1;height:1px;background:var(--line)}
+
+.panel{
+  background:var(--panel);border:1px solid var(--line);
+  border-radius:var(--radius);padding:16px;margin-bottom:12px;
+  position:relative;
+}
+.panel.framed::before,
+.panel.framed::after{
+  content:'';position:absolute;width:6px;height:6px;border:1px solid var(--line3);
+}
+.panel.framed::before{top:-1px;left:-1px;border-right:none;border-bottom:none}
+.panel.framed::after{bottom:-1px;right:-1px;border-left:none;border-top:none}
+
+.muted{color:var(--dim)}
+.empty{
+  color:var(--dim2);text-align:center;padding:34px 0;font-size:11px;
+  font-family:var(--tech);letter-spacing:.2em;text-transform:uppercase;
+}
+.empty::before{content:'[ ';}
+.empty::after{content:' ]';}
+
+/* cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.card{
+  background:var(--panel);border:1px solid var(--line);
+  border-radius:var(--radius);padding:14px 16px;position:relative;
+  transition:border-color .15s;
+}
+.card:hover{border-color:var(--line2)}
+.card .k{
+  font-family:var(--tech);font-size:9.5px;color:var(--dim);
+  letter-spacing:.22em;text-transform:uppercase;
+}
+.card .v{
+  font-family:var(--tech);font-size:26px;font-weight:400;
+  margin-top:6px;color:var(--text);letter-spacing:.02em;
+  font-variant-numeric:tabular-nums;
+}
+.card .s{font-size:10px;color:var(--dim2);margin-top:2px;letter-spacing:.06em}
+
+/* module tiles */
+.mods{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px}
+.mod{
+  background:var(--panel);border:1px solid var(--line);
+  border-radius:var(--radius);padding:12px 14px;cursor:pointer;
+  transition:border-color .15s,background .15s,transform .1s;
+  position:relative;
+}
+.mod:hover{border-color:var(--line3);background:var(--panel2)}
+.mod:active{transform:translateY(1px)}
+.mod b{display:block;font-size:12px;margin-bottom:3px;font-weight:500;color:var(--text)}
+.mod small{color:var(--dim);font-size:10.5px;line-height:1.5;display:block}
+.mod .cat{
+  font-family:var(--tech);font-size:9px;color:var(--dim);
+  letter-spacing:.2em;text-transform:uppercase;
+  margin-top:8px;display:inline-block;padding:1px 6px;
+  border:1px solid var(--line2);border-radius:2px;
+}
+
+/* results */
+.result{
+  margin-bottom:10px;border:1px solid var(--line);
+  border-radius:var(--radius);background:var(--panel);overflow:hidden;
+  animation:fin .25s ease-out;
+}
+@keyframes fin{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.result header{
+  padding:9px 14px;background:var(--panel2);display:flex;gap:10px;
+  align-items:center;border-bottom:1px solid var(--line);font-size:12px;
+}
+.result header b{flex:1;font-weight:500;color:var(--text)}
+.result .body{padding:10px 14px}
+
+table{width:100%;border-collapse:collapse}
+td{
+  padding:6px 0;border-bottom:1px solid var(--line);
+  font-size:11.5px;word-break:break-word;vertical-align:top;
+}
+tr:last-child td{border-bottom:none}
+td:first-child{
+  color:var(--dim);width:34%;padding-right:14px;
+  font-family:var(--tech);letter-spacing:.06em;font-size:10.5px;
+  text-transform:uppercase;
+}
+
+/* pills */
+.pill{
+  display:inline-block;padding:1px 7px;border-radius:2px;
+  font-family:var(--tech);font-size:9.5px;font-weight:400;
+  letter-spacing:.16em;text-transform:uppercase;
+  border:1px solid var(--line2);color:var(--dim);
+}
+.pill.ok{background:transparent;color:var(--dim);border-color:var(--line2)}
+.pill.warn{background:transparent;color:var(--warn);border-color:var(--line3)}
+.pill.bad{background:var(--accent);color:#000;border-color:var(--accent)}
+
+/* hero */
+.hero{
+  background:var(--panel);border:1px solid var(--line);
+  border-radius:var(--radius);padding:22px;margin-bottom:16px;
+  position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--line3),transparent);
+}
+.hero h3{
+  font-family:var(--tech);font-size:14px;margin-bottom:6px;
+  color:var(--text);letter-spacing:.2em;text-transform:uppercase;
+  font-weight:400;
+}
+.hero p{color:var(--dim);font-size:11.5px;margin-bottom:14px;line-height:1.65;max-width:640px}
+.hero .row{display:flex;gap:10px}
+.hero input{
+  flex:1;background:var(--bg2);border:1px solid var(--line);
+  color:var(--text);padding:11px 14px;border-radius:var(--radius);
+  font-family:var(--mono);font-size:12.5px;outline:none;
+  transition:border-color .15s;
+}
+.hero input::placeholder{color:var(--dim2)}
+.hero input:focus{border-color:var(--line3)}
+
+/* progress bar */
+.bar{
+  height:3px;background:var(--panel2);border-radius:1px;
+  overflow:hidden;margin:14px 0 10px;position:relative;
+}
+.bar i{
+  display:block;height:100%;background:var(--accent);width:0;
+  transition:width .3s ease;
+  box-shadow:0 0 10px rgba(255,255,255,.5);
+}
+
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{
+  background:var(--panel2);border:1px solid var(--line);
+  padding:4px 9px;border-radius:2px;font-size:10.5px;
+  color:var(--dim);cursor:pointer;transition:all .12s;
+  font-family:var(--mono);
+}
+.chip:hover{border-color:var(--accent);color:var(--accent);background:var(--panel3)}
+.chip b{
+  color:var(--accent);font-weight:500;margin-right:6px;
+  text-transform:uppercase;font-size:9px;letter-spacing:.1em;
+  font-family:var(--tech);
+}
+
+/* timeline */
+.tl{
+  padding-left:22px;border-left:1px solid var(--line);
+  max-height:340px;overflow-y:auto;
+}
+.tl .e{padding:6px 0;position:relative}
+.tl .e::before{
+  content:'';position:absolute;left:-26px;top:11px;width:6px;height:6px;
+  background:var(--accent);border-radius:50%;border:1px solid var(--bg);
+  box-shadow:0 0 6px rgba(255,255,255,.4);
+}
+.tl .ts{
+  color:var(--dim2);font-size:10px;font-family:var(--tech);
+  letter-spacing:.08em;
+}
+.tl .ev{font-size:11.5px;color:var(--text)}
+.tl .dt{color:var(--dim);font-size:10.5px}
+
+/* confidence rows */
+.conf{
+  display:flex;align-items:center;gap:12px;padding:8px 0;
+  border-bottom:1px solid var(--line);
+}
+.conf:last-child{border-bottom:none}
+.conf .l{flex:1;font-size:11.5px;color:var(--text)}
+.conf .l .muted{font-family:var(--tech);font-size:10px;letter-spacing:.08em}
+.conf .b{
+  width:120px;height:3px;background:var(--panel2);
+  border-radius:1px;overflow:hidden;
+}
+.conf .b i{
+  display:block;height:100%;background:var(--accent);
+  box-shadow:0 0 6px rgba(255,255,255,.4);
+}
+.conf .p{
+  width:34px;text-align:right;font-size:10px;color:var(--dim);
+  font-family:var(--tech);font-variant-numeric:tabular-nums;
+}
+
+/* canvas */
+canvas{
+  display:block;width:100%;height:480px;background:#000;
+  border:1px solid var(--line);border-radius:var(--radius);
+  cursor:grab;
+}
+canvas:active{cursor:grabbing}
+
+/* palette */
+.palette{
+  position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:200;
+  display:none;align-items:flex-start;justify-content:center;padding-top:12vh;
+  backdrop-filter:blur(2px);
+}
+.palette.on{display:flex;animation:fadein .12s ease}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.palette .box{
+  width:min(600px,92vw);background:var(--panel);
+  border:1px solid var(--line2);border-radius:var(--radius);overflow:hidden;
+  box-shadow:0 24px 60px rgba(0,0,0,.9);
+  animation:slidein .16s ease-out;
+}
+@keyframes slidein{from{transform:translateY(-8px);opacity:0}to{transform:none;opacity:1}}
+.palette .box::before{
+  content:'COMMAND';display:block;padding:8px 14px;
+  font-family:var(--tech);font-size:9.5px;letter-spacing:.24em;
+  color:var(--dim2);border-bottom:1px solid var(--line);
+  background:var(--bg2);
+}
+.palette input{
+  width:100%;background:transparent;border:none;
+  border-bottom:1px solid var(--line);color:var(--text);
+  padding:16px;font-family:var(--mono);font-size:13px;outline:none;
+}
+.palette input::placeholder{color:var(--dim2)}
+.palette ul{list-style:none;max-height:46vh;overflow-y:auto}
+.palette li{
+  padding:10px 16px;cursor:pointer;font-size:12px;
+  display:flex;gap:12px;align-items:center;
+  border-left:2px solid transparent;
+  transition:background .08s,border-color .08s;
+}
+.palette li:hover,.palette li.on{
+  background:var(--panel2);color:var(--accent);border-left-color:var(--accent);
+}
+.palette li .k{
+  color:var(--dim2);font-size:9.5px;margin-left:auto;
+  font-family:var(--tech);letter-spacing:.14em;text-transform:uppercase;
+}
+
+/* notifications */
+.notif{
+  position:fixed;top:70px;right:20px;z-index:190;
+  display:flex;flex-direction:column;gap:8px;pointer-events:none;
+}
+.notif .n{
+  background:var(--panel2);border:1px solid var(--line2);
+  border-left:2px solid var(--accent);
+  padding:10px 14px;border-radius:var(--radius);
+  font-size:11.5px;min-width:240px;max-width:360px;
+  animation:notifin .2s ease-out;
+  transition:opacity .25s,transform .25s;
+  box-shadow:0 8px 24px rgba(0,0,0,.6);
+  font-family:var(--mono);
+}
+@keyframes notifin{from{transform:translateX(20px);opacity:0}to{transform:none;opacity:1}}
+.notif .n::before{
+  content:'//';color:var(--dim2);margin-right:8px;
+  font-family:var(--tech);letter-spacing:.1em;
+}
+.notif .n.bad{border-left-color:#fff;background:#0f0f0f}
+.notif .n.ok{border-left-color:var(--dim)}
+.notif .n small{
+  color:var(--dim2);display:block;font-size:9.5px;margin-top:3px;
+  font-family:var(--tech);letter-spacing:.14em;
+}
+
+.hidden{display:none!important}
+
+/* boot overlay */
+.boot{
+  position:fixed;inset:0;background:#000;z-index:500;
+  display:flex;align-items:center;justify-content:center;
+  transition:opacity .55s ease;font-family:var(--tech);
+}
+.boot.off{opacity:0;pointer-events:none}
+.boot-inner{max-width:680px;padding:0 20px}
+.boot pre{
+  font-family:var(--tech);font-size:13px;line-height:1.1;
+  color:var(--text);white-space:pre;letter-spacing:.02em;
+  text-shadow:0 0 8px rgba(255,255,255,.25);
+}
+.boot #bootLog{
+  margin-top:24px;font-size:11px;color:var(--dim);
+  letter-spacing:.1em;line-height:1.9;min-height:120px;
+}
+.boot #bootLog div{opacity:0;animation:bootline .2s forwards}
+.boot #bootLog div::before{content:'> ';color:var(--dim2)}
+@keyframes bootline{to{opacity:1}}
+
+/* misc */
+.kbd{
+  display:inline-block;padding:1px 5px;border:1px solid var(--line2);
+  border-radius:2px;font-family:var(--tech);font-size:10px;color:var(--dim);
+  letter-spacing:.1em;margin:0 2px;
+}
+code{
+  font-family:var(--mono);background:var(--panel2);
+  padding:1px 5px;border-radius:2px;font-size:.92em;
+  border:1px solid var(--line);color:var(--dim);
+}
+hr{border:none;border-top:1px solid var(--line);margin:16px 0}
+</style>
+</head>
+<body>
+
+<div class="boot" id="boot">
+  <div class="boot-inner">
+    <pre>  ███╗   ██╗███████╗██╗   ██╗████████╗██████╗  █████╗
+  ████╗  ██║██╔════╝██║   ██║╚══██╔══╝██╔══██╗██╔══██╗
+  ██╔██╗ ██║█████╗  ██║   ██║   ██║   ██████╔╝███████║
+  ██║╚██╗██║██╔══╝  ██║   ██║   ██║   ██╔══██╗██╔══██║
+  ██║ ╚████║███████╗╚██████╔╝   ██║   ██║  ██║██║  ██║
+  ╚═╝  ╚═══╝╚══════╝ ╚═════╝    ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝</pre>
+    <div id="bootLog"></div>
+  </div>
+</div>
+
+<div class="app">
+  <header class="top">
+    <span class="brand"><span class="dot"></span>NEUTRA_7G</span>
+    <div class="searchwrap">
+      <input id="q" placeholder="email · username · domain · ip · phone · cve · hash · wallet · coords" autofocus>
+    </div>
+    <span class="type" id="type">idle</span>
+    <button class="primary" id="goScan">scan</button>
+    <button id="goAI">ai run</button>
+    <button class="ghost" id="palBtn" title="Ctrl+K">⌘k</button>
+  </header>
+
+  <aside class="side" id="side"></aside>
+
+  <main class="main" id="main"></main>
+</div>
+
+<div class="palette" id="palette">
+  <div class="box">
+    <input id="palInput" placeholder="command, tab, module…">
+    <ul id="palList"></ul>
+  </div>
+</div>
+
+<div class="notif" id="notif"></div>
+
+<!-- ===================== TEMPLATES ===================== -->
+<template id="tpl-dashboard">
+  <h2>Overview</h2>
+  <div class="cards" id="dCards"></div>
+  <h2>Recent Activity</h2>
+  <div class="panel framed" id="dHistory"></div>
+</template>
+
+<template id="tpl-ai">
+  <div class="hero">
+    <h3>✦ Autonomous Investigation</h3>
+    <p>Single target. Every applicable module. Correlated entities, ranked confidence, relationship graph.</p>
+    <div class="row">
+      <input id="aiq" placeholder="user · user@example.com · example.com · 8.8.8.8 · 0x…">
+      <button class="primary" id="aigo">execute</button>
+    </div>
+    <div class="bar"><i id="aibar"></i></div>
+    <div class="muted" id="aistat" style="font-size:11px;font-family:var(--tech);letter-spacing:.14em;text-transform:uppercase">status: idle</div>
+  </div>
+  <div id="aiOut" class="hidden">
+    <h2>Summary</h2><div class="panel framed" id="aiSummary"></div>
+    <h2>Entities</h2><div class="panel framed"><div class="chips" id="aiEntities"></div></div>
+    <h2>Confidence Ranking</h2><div class="panel framed" id="aiConf"></div>
+    <h2>Timeline</h2><div class="panel framed"><div class="tl" id="aiTimeline"></div></div>
+    <h2>Suggested Pivots</h2><div class="panel framed" id="aiPivots"></div>
+    <h2>Relationship Graph</h2><div class="panel framed" style="padding:6px"><canvas id="aiGraph"></canvas></div>
+    <h2>Raw Module Output</h2><div id="aiRaw"></div>
+  </div>
+</template>
+
+<template id="tpl-scan">
+  <h2>Applicable Modules</h2>
+  <div id="mods" class="mods"></div>
+  <h2>Results</h2>
+  <div id="out"></div>
+</template>
+
+<template id="tpl-graph">
+  <h2>Relationship Graph</h2>
+  <div class="panel framed" style="padding:6px"><canvas id="bigGraph"></canvas></div>
+  <p class="muted" style="margin-top:10px;font-size:10.5px;font-family:var(--tech);letter-spacing:.12em;text-transform:uppercase">// run an ai investigation to populate the graph</p>
+</template>
+
+<template id="tpl-cases">
+  <h2>Cases</h2>
+  <div style="margin-bottom:14px;display:flex;gap:8px">
+    <button class="primary" id="newCase">+ archive current run</button>
+    <button class="ghost" id="reloadCases">⟲ refresh</button>
+  </div>
+  <div id="casesList"></div>
+</template>
+
+<template id="tpl-reports">
+  <h2>Reports</h2>
+  <div style="margin-bottom:14px;display:flex;gap:8px">
+    <button class="primary" id="expMd">markdown</button>
+    <button id="expJson">json</button>
+    <button class="ghost" id="expPrint">print / pdf</button>
+  </div>
+  <div class="panel framed" id="reportInfo">No investigation loaded.</div>
+</template>
+
+<template id="tpl-history">
+  <h2>Scan History</h2>
+  <div style="margin-bottom:14px;display:flex;gap:8px">
+    <input id="histFilter" placeholder="filter…" style="flex:1;background:var(--panel);border:1px solid var(--line);color:var(--text);padding:8px 12px;border-radius:2px;font-family:var(--mono);font-size:11.5px;outline:none">
+    <button class="ghost" id="reloadHist">⟲</button>
+  </div>
+  <div class="panel framed" id="histList"></div>
+</template>
+
+<template id="tpl-bookmarks">
+  <h2>Bookmarks</h2>
+  <div style="margin-bottom:14px;display:flex;gap:8px">
+    <input id="bmValue" placeholder="value" style="flex:1;background:var(--panel);border:1px solid var(--line);color:var(--text);padding:8px 12px;border-radius:2px;font-family:var(--mono);font-size:11.5px;outline:none">
+    <input id="bmLabel" placeholder="label" style="width:180px;background:var(--panel);border:1px solid var(--line);color:var(--text);padding:8px 12px;border-radius:2px;font-family:var(--mono);font-size:11.5px;outline:none">
+    <button class="primary" id="bmAdd">+ add</button>
+    <button class="ghost" id="reloadBm">⟲</button>
+  </div>
+  <div class="panel framed" id="bmList"></div>
+</template>
+
+<template id="tpl-settings">
+  <h2>Preferences</h2>
+  <div class="panel framed">
+    <label style="display:flex;align-items:center;gap:12px;margin-bottom:14px;font-family:var(--tech);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)">
+      <input type="checkbox" id="setSound" checked style="accent-color:#fff;width:14px;height:14px;cursor:pointer">
+      audio feedback
+    </label>
+    <label style="display:flex;align-items:center;gap:12px;margin-bottom:14px;font-family:var(--tech);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)">
+      font size
+      <input type="range" id="setFs" min="11" max="18" step="1" value="13" style="flex:1;accent-color:#fff;cursor:pointer">
+      <span id="setFsVal" style="color:var(--text);font-variant-numeric:tabular-nums">13</span>
+    </label>
+    <label style="display:flex;align-items:center;gap:12px;font-family:var(--tech);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)">
+      tint
+      <input type="color" id="setAccent" value="#ffffff" style="background:transparent;border:1px solid var(--line);border-radius:2px;cursor:pointer;height:26px;width:52px">
+    </label>
+  </div>
+  <h2>Module Catalog</h2>
+  <div class="panel framed"><div class="muted" id="catInfo" style="margin-bottom:4px;font-family:var(--tech);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase">loading…</div></div>
+  <div class="mods" id="catList"></div>
+</template>
+
+<template id="tpl-modules">
+  <h2>All Modules</h2>
+  <div class="panel framed"><div class="muted" id="modInfo" style="margin-bottom:4px;font-family:var(--tech);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase">loading…</div></div>
+  <div class="mods" id="modList"></div>
+</template>
+
+<template id="tpl-about">
+  <h2>NEUTRA · SECTOR 7G</h2>
+  <div class="panel framed">
+    <p class="muted" style="font-size:12px;line-height:1.85">
+      Single-file OSINT console. Backend <code>neutra.py</code>, frontend this page.<br>
+      Public data only. Respect platforms and people you research.<br><br>
+      <span style="font-family:var(--tech);letter-spacing:.18em;text-transform:uppercase;font-size:10px;color:var(--dim2)">Environment</span><br>
+      <code>PORT</code> · <code>NEUTRA_HOST</code> · <code>NEUTRA_AUTH</code><br>
+      <code>GITHUB_TOKEN</code> · <code>NUMVERIFY_KEY</code><br><br>
+      <span style="font-family:var(--tech);letter-spacing:.18em;text-transform:uppercase;font-size:10px;color:var(--dim2)">Shortcuts</span><br>
+      <span class="kbd">Ctrl</span><span class="kbd">K</span> command palette &nbsp;
+      <span class="kbd">/</span> focus search &nbsp;
+      <span class="kbd">Esc</span> dismiss
+    </p>
+  </div>
+</template>
+
+<script>
+'use strict';
+
+/* ═══════════════════════════════════════════════════════════════
+   SOUND ENGINE — synthesized, no external assets
+   ═══════════════════════════════════════════════════════════════ */
+const Sound = (() => {
+  let ctx = null;
+  let enabled = true;
+
+  function ac(){
+    if(!enabled) return null;
+    if(!ctx){
+      try{ ctx = new (window.AudioContext || window.webkitAudioContext)(); }
+      catch(e){ enabled = false; return null; }
+    }
+    if(ctx.state === 'suspended') ctx.resume().catch(()=>{});
+    return ctx;
+  }
+
+  function tone(freq, dur, type='square', gain=0.035, delay=0){
+    const c = ac(); if(!c) return;
+    const o = c.createOscillator();
+    const g = c.createGain();
+    o.type = type;
+    o.frequency.setValueAtTime(freq, c.currentTime + delay);
+    o.connect(g); g.connect(c.destination);
+    const t = c.currentTime + delay;
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(gain, t + 0.004);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.start(t); o.stop(t + dur + 0.03);
+  }
+
+  function sweep(f1, f2, dur, gain=0.03){
+    const c = ac(); if(!c) return;
+    const o = c.createOscillator();
+    const g = c.createGain();
+    o.type = 'sine';
+    o.frequency.setValueAtTime(f1, c.currentTime);
+    o.frequency.exponentialRampToValueAtTime(Math.max(f2,1), c.currentTime + dur);
+    o.connect(g); g.connect(c.destination);
+    g.gain.setValueAtTime(gain, c.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + dur);
+    o.start(); o.stop(c.currentTime + dur + 0.03);
+  }
+
+  return {
+    setEnabled(v){ enabled = !!v; if(v) ac(); },
+    isEnabled(){ return enabled; },
+    init(){ ac(); },
+    click(){ tone(1100, 0.035, 'square', 0.028); },
+    key(){ tone(1900, 0.012, 'square', 0.012); },
+    hover(){ tone(760, 0.018, 'sine', 0.008); },
+    ok(){ tone(880, 0.07, 'square', 0.026); tone(1320, 0.11, 'square', 0.022, 0.07); },
+    bad(){ tone(240, 0.13, 'sawtooth', 0.032); tone(160, 0.18, 'sawtooth', 0.026, 0.09); },
+    notify(){ tone(660, 0.05, 'sine', 0.024); tone(990, 0.08, 'sine', 0.02, 0.06); },
+    scan(){ sweep(220, 2200, 0.4, 0.026); },
+    boot(){ [200,420,640,880].forEach((f,i)=>tone(f, 0.09, 'square', 0.02, i*0.09)); },
+    tab(){ tone(520, 0.03, 'square', 0.018); tone(780, 0.035, 'square', 0.016, 0.03); },
+    open(){ tone(420, 0.03, 'square', 0.018); tone(840, 0.04, 'square', 0.014, 0.025); },
+    close(){ tone(840, 0.03, 'square', 0.014); tone(420, 0.04, 'square', 0.018, 0.025); }
+  };
+})();
+
+/* ═══════════════════════════════════════════════════════════════
+   CORE
+   ═══════════════════════════════════════════════════════════════ */
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const API = '';
+const TABS = [
+  {id:'dashboard', label:'Dashboard'},
+  {id:'ai',        label:'AI Mode'},
+  {id:'scan',      label:'Search'},
+  {id:'graph',     label:'Graph'},
+  {id:'cases',     label:'Cases'},
+  {id:'reports',   label:'Reports'},
+  {id:'history',   label:'History'},
+  {id:'bookmarks', label:'Bookmarks'},
+  {id:'modules',   label:'Modules'},
+  {id:'settings',  label:'Settings'},
+  {id:'about',     label:'About'}
+];
+
+const state = {
+  type:'', mods:[], job:null, graph:null,
+  catalog:[], scans:0, kill:false,
+  fs: 13, accent: '#ffffff', sound: true
+};
+
+const esc = s => String(s==null?'':s).replace(/[&<>"']/g, c => (
+  {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]
+));
+const ts = () => new Date().toTimeString().slice(0,8);
+const isDisabled = () => state.kill;
+
+async function api(path){
+  if(isDisabled()) throw new Error('kill switch armed');
+  const r = await fetch(API + path);
+  if(!r.ok && r.status !== 200) throw new Error('HTTP ' + r.status);
+  return r.json();
+}
+
+function notify(msg, kind){
+  const el = document.createElement('div');
+  el.className = 'n ' + (kind||'');
+  el.innerHTML = esc(msg) + '<small>' + ts() + ' · sector 7G</small>';
+  $('#notif').appendChild(el);
+  if(kind === 'bad') Sound.bad();
+  else if(kind === 'ok') Sound.ok();
+  else Sound.notify();
+  setTimeout(() => { el.style.opacity = '0'; el.style.transform = 'translateX(20px)'; setTimeout(() => el.remove(), 260); }, 3800);
+}
+
+/* ── Tabs ── */
+function buildSide(){
+  const groups = [
+    {name:'Operations', ids:['dashboard','ai','scan','graph']},
+    {name:'Archive',    ids:['cases','reports','history','bookmarks']},
+    {name:'System',     ids:['modules','settings','about']}
+  ];
+  let html = '';
+  groups.forEach(g => {
+    html += `<div class="sect">${esc(g.name)}</div>`;
+    g.ids.forEach(id => {
+      const t = TABS.find(x => x.id === id);
+      if(t) html += `<button data-tab="${t.id}">${esc(t.label)}</button>`;
+    });
+  });
+  $('#side').innerHTML = html;
+  $$('#side button').forEach(b => {
+    b.onclick = () => switchTab(b.dataset.tab);
+    b.addEventListener('mouseenter', () => Sound.hover());
+  });
+}
+
+function switchTab(id){
+  $$('#side button').forEach(b => b.classList.toggle('on', b.dataset.tab === id));
+  const tpl = document.getElementById('tpl-' + id);
+  if(!tpl){ $('#main').innerHTML = '<div class="empty">missing view</div>'; return; }
+  $('#main').innerHTML = '';
+  $('#main').appendChild(tpl.content.cloneNode(true));
+  Sound.tab();
+  bindTab(id);
+}
+
+function bindTab(id){
+  if(id === 'dashboard') loadDashboard();
+  if(id === 'scan')      bindScan();
+  if(id === 'ai')        bindAI();
+  if(id === 'graph')     drawGraph('#bigGraph', state.graph);
+  if(id === 'history')   loadHistory();
+  if(id === 'bookmarks') loadBookmarks();
+  if(id === 'cases')     loadCases();
+  if(id === 'reports')   bindReports();
+  if(id === 'modules')   loadModules('#modList', '#modInfo');
+  if(id === 'settings')  bindSettings();
+}
+
+/* ── Scan ── */
+async function detect(q){
+  try{
+    const j = await api('/api/detect?q=' + encodeURIComponent(q));
+    state.type = j.type; state.mods = j.mods;
+    $('#type').textContent = j.type === 'unknown' ? 'unknown' : j.type;
+    return j;
+  }catch(e){ notify('detect: ' + e.message, 'bad'); return {type:'unknown', mods:[]}; }
+}
+
+function bindScan(){}
+
+async function runScan(){
+  const q = $('#q').value.trim();
+  if(!q){ Sound.bad(); return; }
+  Sound.scan();
+  switchTab('scan');
+  const j = await detect(q);
+  if(!j.mods.length){
+    $('#mods').innerHTML = '<div class="empty">no modules apply to this input</div>';
+    return;
+  }
+  $('#mods').innerHTML = j.mods.map(m =>
+    `<div class="mod" data-id="${esc(m.id)}">
+      <b>${esc(m.label)}</b><small>${esc(m.why)}</small>
+      <span class="cat">${esc(m.category)}</span>
+    </div>`
+  ).join('');
+  $$('.mod').forEach(el => {
+    el.onclick = () => runModule(el.dataset.id);
+    el.addEventListener('mouseenter', () => Sound.hover());
+  });
+  state.scans++;
+  for(const m of j.mods) await runModule(m.id);
+}
+
+async function runModule(id){
+  if(isDisabled()) return;
+  const q = $('#q').value.trim();
+  const t0 = performance.now();
+  try{
+    const r = await api('/api/run?m=' + encodeURIComponent(id) + '&q=' + encodeURIComponent(q));
+    r.ms = Math.round(performance.now() - t0);
+    renderResult(id, r);
+  }catch(e){
+    renderResult(id, {status:'bad', ms:0, rows:[['error', e.message]]});
+  }
+}
+
+function renderResult(id, r){
+  const out = $('#out'); if(!out) return;
+  const mod = state.catalog.find(m => m.id === id) || {label:id};
+  const st = r.status || 'ok';
+  const rows = (r.rows || []).map(([k,v]) =>
+    k === '' ? `<tr><td></td><td>${esc(v)}</td></tr>`
+             : `<tr><td>${esc(k)}</td><td>${esc(v)}</td></tr>`
+  ).join('');
+  const el = document.createElement('div');
+  el.className = 'result';
+  el.innerHTML =
+    `<header><b>${esc(mod.label)}</b>
+       <span class="pill ${st}">${st}</span>
+       <span class="muted" style="font-size:10px;font-family:var(--tech);letter-spacing:.1em">${r.ms||0}ms</span>
+     </header>
+     <div class="body"><table>${rows}</table></div>`;
+  out.appendChild(el);
+}
+
+/* ── AI ── */
+function bindAI(){
+  const inp = $('#aiq'), btn = $('#aigo');
+  if(!inp || !btn) return;
+  btn.onclick = startAI;
+  inp.addEventListener('keydown', e => { if(e.key === 'Enter') startAI(); });
+}
+
+async function startAI(){
+  const q = ($('#aiq') && $('#aiq').value.trim()) || $('#q').value.trim();
+  if(!q){ Sound.bad(); return; }
+  Sound.scan();
+  $('#aiOut').classList.add('hidden');
+  $('#aibar').style.width = '0%';
+  $('#aistat').textContent = 'status: dispatching…';
+  try{
+    const j = await api('/api/ai/start?q=' + encodeURIComponent(q));
+    state.job = j.job;
+    pollAI(j.job);
+  }catch(e){ notify('ai: ' + e.message, 'bad'); }
+}
+
+async function pollAI(jobId){
+  try{
+    const j = await api('/api/ai/poll?job=' + jobId);
+    const pct = j.total ? Math.round(100 * j.done / j.total) : 0;
+    const bar = $('#aibar');
+    if(bar) bar.style.width = pct + '%';
+    const st = $('#aistat');
+    if(st) st.textContent = 'status: ' + j.state + ' — ' + j.done + '/' + j.total;
+    if(j.state !== 'done'){ setTimeout(() => pollAI(jobId), 700); return; }
+    renderAI(j);
+  }catch(e){ notify('poll: ' + e.message, 'bad'); }
+}
+
+function renderAI(j){
+  const out = $('#aiOut'); if(!out) return;
+  out.classList.remove('hidden');
+
+  $('#aiSummary').innerHTML = '<p style="line-height:1.75;font-size:12px">' + esc(j.summary || '') + '</p>';
+
+  const grouped = {};
+  (j.entities || []).forEach(e => { (grouped[e.kind] = grouped[e.kind] || []).push(e); });
+  let chips = '';
+  Object.keys(grouped).forEach(kind => {
+    chips += `<span style="font-family:var(--tech);color:var(--dim);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;margin-right:8px;display:inline-block;margin-top:6px">${esc(kind)}</span>`;
+    grouped[kind].slice(0, 24).forEach(e => {
+      chips += `<span class="chip" data-v="${esc(e.value)}"><b>${esc(kind)}</b>${esc(e.value)}</span>`;
+    });
+    chips += '<div style="width:100%;height:2px"></div>';
+  });
+  $('#aiEntities').innerHTML = chips || '<span class="muted">none</span>';
+  $$('#aiEntities .chip').forEach(c => c.onclick = () => {
+    $('#q').value = c.dataset.v;
+    runScan();
+  });
+
+  $('#aiConf').innerHTML = (j.confidence || []).map(s =>
+    `<div class="conf">
+      <span class="pill ${s.status}">${s.status}</span>
+      <span class="l">${esc(s.label)} <span class="muted">· ${esc(s.category)}</span></span>
+      <span class="b"><i style="width:${s.confidence}%"></i></span>
+      <span class="p">${s.confidence}</span>
+    </div>`
+  ).join('');
+
+  $('#aiTimeline').innerHTML = (j.timeline || []).map(t =>
+    `<div class="e"><div class="ts">${esc(t.ts)}</div>
+       <div class="ev">${esc(t.event)}</div>
+       <div class="dt">${esc(t.detail)}</div></div>`
+  ).join('');
+
+  $('#aiPivots').innerHTML = (j.pivots || []).map(p =>
+    `<div class="conf">
+      <span style="font-family:var(--tech);color:var(--dim);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;min-width:70px">${esc(p.type)}</span>
+      <span class="l" style="cursor:pointer" data-v="${esc(p.value)}">${esc(p.value)}
+        <span class="muted">— ${esc(p.why)}</span></span>
+    </div>`
+  ).join('') || '<span class="muted">none</span>';
+  $$('#aiPivots [data-v]').forEach(x => x.onclick = () => {
+    $('#q').value = x.dataset.v;
+    runScan();
+  });
+
+  if(j.graph){ state.graph = j.graph; drawGraph('#aiGraph', j.graph); }
+
+  const raw = j.raw || {};
+  $('#aiRaw').innerHTML = Object.keys(raw).map(mid => {
+    const r = raw[mid];
+    const conf = (j.confidence || []).find(x => x.module === mid);
+    const label = conf ? conf.label : mid;
+    const st = r.status || (r.ok ? 'ok' : 'bad');
+    const rows = (r.rows || []).map(([k,v]) =>
+      `<tr><td>${esc(k)}</td><td>${esc(v)}</td></tr>`
+    ).join('');
+    const body = r.ok ? `<table>${rows}</table>`
+      : `<span class="pill bad">error</span> ${esc(r.error || '')}`;
+    return `<div class="result"><header><b>${esc(label)}</b>
+        <span class="pill ${st}">${st}</span>
+        <span class="muted" style="font-size:10px;font-family:var(--tech);letter-spacing:.1em">${esc(mid)}</span></header>
+      <div class="body">${body}</div></div>`;
+  }).join('') || '<div class="empty">no raw data</div>';
+
+  notify('investigation complete · ' + j.total + ' modules', 'ok');
+}
+
+/* ── Graph ── */
+function drawGraph(sel, g){
+  const cv = document.querySelector(sel);
+  if(!cv || !g) return;
+  const dpr = window.devicePixelRatio || 1;
+  const w = cv.clientWidth, h = cv.clientHeight;
+  cv.width = w * dpr; cv.height = h * dpr;
+  const ctx = cv.getContext('2d'); ctx.scale(dpr, dpr);
+
+  const nodes = g.nodes.map(n => ({
+    ...n,
+    x: w/2 + (Math.random()-.5) * 200,
+    y: h/2 + (Math.random()-.5) * 200,
+    vx: 0, vy: 0
+  }));
+  const idx = {}; nodes.forEach((n,i) => idx[n.id] = i);
+  const edges = g.edges.filter(e => idx[e.from] != null && idx[e.to] != null);
+
+  const radius = n => n.kind === 'root' ? 16 : n.kind === 'category' ? 10 : 3.5;
+  const color = n => {
+    if(n.kind === 'root') return '#ffffff';
+    if(n.kind === 'category') return '#9a9a9a';
+    return ({
+      url:'#d0d0d0', email:'#b8b8b8', ip:'#909090',
+      username:'#787878', hash:'#686868', cve:'#a0a0a0'
+    }[n.kind] || '#5a5a5a');
+  };
+
+  let alpha = 1, dragging = null, hover = null;
+
+  function tick(){
+    alpha *= .985;
+    for(let i=0;i<nodes.length;i++){
+      for(let j=i+1;j<nodes.length;j++){
+        const a=nodes[i], b=nodes[j];
+        const dx=b.x-a.x, dy=b.y-a.y;
+        const d2=dx*dx+dy*dy+1, d=Math.sqrt(d2);
+        const f=780/d2;
+        a.vx-=f*dx/d; a.vy-=f*dy/d;
+        b.vx+=f*dx/d; b.vy+=f*dy/d;
+      }
+    }
+    edges.forEach(e => {
+      const a=nodes[idx[e.from]], b=nodes[idx[e.to]];
+      const dx=b.x-a.x, dy=b.y-a.y;
+      const d=Math.hypot(dx,dy)||1;
+      const rest=(a.kind==='root'||b.kind==='root')?150:72;
+      const f=(d-rest)*.008;
+      a.vx+=f*dx/d; a.vy+=f*dy/d;
+      b.vx-=f*dx/d; b.vy-=f*dy/d;
+    });
+    nodes.forEach(n => {
+      n.vx += (w/2 - n.x) * .001;
+      n.vy += (h/2 - n.y) * .001;
+      n.vx *= .87; n.vy *= .87;
+      n.x += n.vx; n.y += n.vy;
+    });
+    render();
+    if(alpha > .02) requestAnimationFrame(tick);
+  }
+
+  function render(){
+    ctx.clearRect(0,0,w,h);
+    ctx.strokeStyle = 'rgba(60,60,60,.55)';
+    ctx.lineWidth = 1;
+    edges.forEach(e => {
+      const a=nodes[idx[e.from]], b=nodes[idx[e.to]];
+      ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+    });
+    nodes.forEach(n => {
+      const r = radius(n);
+      ctx.beginPath(); ctx.arc(n.x, n.y, r, 0, Math.PI*2);
+      ctx.fillStyle = color(n);
+      ctx.globalAlpha = hover && n !== hover ? .3 : 1;
+      if(n.kind === 'root' || n.kind === 'category'){
+        ctx.shadowColor = 'rgba(255,255,255,.6)';
+        ctx.shadowBlur = 10;
+      }
+      ctx.fill();
+      ctx.shadowBlur = 0;
+      ctx.globalAlpha = 1;
+      if(n.kind === 'root' || n.kind === 'category' || n === hover || nodes.length < 30){
+        ctx.fillStyle = n.kind === 'root' ? '#ffffff' : '#8a8a8a';
+        ctx.font = (n.kind === 'root' ? '500 11px ' : '10px ') + "'JetBrains Mono', monospace";
+        ctx.textAlign = 'center';
+        ctx.fillText((n.label||'').slice(0,34), n.x, n.y - r - 5);
+      }
+    });
+  }
+
+  function findNode(x,y){
+    for(const n of nodes){
+      const r = radius(n);
+      if((x-n.x)**2 + (y-n.y)**2 <= (r+5)**2) return n;
+    }
+    return null;
+  }
+
+  cv.onmousemove = e => {
+    const r = cv.getBoundingClientRect();
+    const x = e.clientX - r.left, y = e.clientY - r.top;
+    if(dragging){ dragging.x=x; dragging.y=y; dragging.vx=0; dragging.vy=0; render(); }
+    else { hover = findNode(x,y); render(); }
+  };
+  cv.onmousedown = e => {
+    const r = cv.getBoundingClientRect();
+    dragging = findNode(e.clientX - r.left, e.clientY - r.top);
+  };
+  cv.onmouseup = () => { dragging = null; };
+  cv.onmouseleave = () => { dragging = null; hover = null; render(); };
+
+  tick();
+}
+
+/* ── Dashboard ── */
+async function loadDashboard(){
+  try{
+    const [h,c,b] = await Promise.all([api('/api/history'), api('/api/cases'), api('/api/bookmarks')]);
+    const hist = h.history || [], cases = c.cases || [], bms = b.bookmarks || [];
+    $('#dCards').innerHTML =
+      card('Scans', hist.length, 'total runs') +
+      card('Cases', cases.length, 'archived') +
+      card('Bookmarks', bms.length, 'saved') +
+      card('Modules', state.catalog.length, 'available');
+    $('#dHistory').innerHTML = hist.length
+      ? hist.slice(0,12).map(x =>
+          `<div class="conf">
+            <span class="pill ${esc(x.status||'ok')}">${esc(x.status||'ok')}</span>
+            <span class="l">${esc(x.q)} <span class="muted">· ${esc(x.module)}</span></span>
+            <span class="p">${esc((x.ts||'').slice(11,19))}</span>
+          </div>`).join('')
+      : '<div class="empty">no scans yet</div>';
+  }catch(e){}
+}
+
+function card(k,v,s){
+  return `<div class="card"><div class="k">${esc(k)}</div>
+    <div class="v">${esc(String(v))}</div>
+    <div class="s">${esc(s||'')}</div></div>`;
+}
+
+/* ── History ── */
+async function loadHistory(){
+  try{
+    const j = await api('/api/history');
+    const f = ($('#histFilter') && $('#histFilter').value || '').toLowerCase();
+    const h = (j.history || []).filter(x =>
+      !f || x.q.toLowerCase().includes(f) || (x.module||'').toLowerCase().includes(f));
+    $('#histList').innerHTML = h.length
+      ? h.slice(0,300).map(x =>
+          `<div class="conf"><span class="pill ${esc(x.status||'ok')}">${esc(x.status||'ok')}</span>
+            <span class="l"><b style="font-weight:500">${esc(x.q)}</b> <span class="muted">· ${esc(x.module)}</span></span>
+            <span class="p">${esc((x.ts||'').replace('T',' ').slice(0,19))}</span></div>`).join('')
+      : '<div class="empty">no history</div>';
+  }catch(e){}
+  const f = $('#histFilter'); if(f) f.oninput = loadHistory;
+  const rl = $('#reloadHist'); if(rl) rl.onclick = loadHistory;
+}
+
+/* ── Bookmarks ── */
+async function loadBookmarks(){
+  try{
+    const j = await api('/api/bookmarks');
+    const bm = j.bookmarks || [];
+    $('#bmList').innerHTML = bm.length
+      ? bm.map(x =>
+          `<div class="conf"><span class="l"><b style="font-weight:500">${esc(x.value)}</b>
+             <span class="muted">${esc(x.type||'')} · ${esc(x.label||'')}</span></span>
+            <button class="ghost" data-del="${esc(x.id)}" style="padding:3px 9px;font-size:10px">×</button>
+          </div>`).join('')
+      : '<div class="empty">no bookmarks</div>';
+    $$('#bmList [data-del]').forEach(b => b.onclick = async () => {
+      await api('/api/bookmarks/delete?id=' + encodeURIComponent(b.dataset.del));
+      loadBookmarks();
+    });
+  }catch(e){}
+  const rl = $('#reloadBm'); if(rl) rl.onclick = loadBookmarks;
+  const ad = $('#bmAdd'); if(ad) ad.onclick = async () => {
+    const v = $('#bmValue').value.trim(); if(!v) return;
+    await api('/api/bookmarks/add?value=' + encodeURIComponent(v) +
+              '&label=' + encodeURIComponent($('#bmLabel').value.trim()));
+    $('#bmValue').value = ''; $('#bmLabel').value = '';
+    loadBookmarks();
+  };
+}
+
+/* ── Cases ── */
+async function loadCases(){
+  try{
+    const j = await api('/api/cases');
+    const cs = j.cases || [];
+    $('#casesList').innerHTML = cs.length
+      ? cs.map(c =>
+          `<div class="panel framed" style="display:flex;align-items:center;gap:14px;padding:12px 16px">
+            <div style="flex:1"><b style="font-weight:500">${esc(c.title || c.id)}</b>
+              <div class="muted" style="font-size:10.5px;margin-top:3px;font-family:var(--tech);letter-spacing:.08em">
+                target: ${esc(c.target||'?')} · updated ${esc((c.updated||'').slice(0,19))}</div></div>
+            <button class="ghost" data-load="${esc(c.id)}" style="padding:5px 11px;font-size:10px">load</button>
+            <button class="ghost" data-del="${esc(c.id)}" style="padding:5px 11px;font-size:10px">del</button>
+          </div>`).join('')
+      : '<div class="empty">no cases yet</div>';
+    $$('#casesList [data-load]').forEach(b => b.onclick = () => {
+      const c = cs.find(x => x.id === b.dataset.load);
+      if(c && c.target){ $('#q').value = c.target; runScan(); }
+    });
+    $$('#casesList [data-del]').forEach(b => b.onclick = async () => {
+      await api('/api/cases/delete?id=' + encodeURIComponent(b.dataset.del));
+      loadCases();
+    });
+  }catch(e){}
+  const nc = $('#newCase'); if(nc) nc.onclick = async () => {
+    if(!state.job) return notify('run an ai investigation first', 'bad');
+    const j = await api('/api/ai/poll?job=' + state.job);
+    const c = {title:'Case: ' + j.q, target: j.q, type: j.type,
+      snapshot:{summary:j.summary, entities:j.entities, confidence:j.confidence}};
+    await api('/api/cases/save?case=' + encodeURIComponent(JSON.stringify(c)));
+    loadCases();
+    notify('case archived', 'ok');
+  };
+  const rl = $('#reloadCases'); if(rl) rl.onclick = loadCases;
+}
+
+/* ── Reports ── */
+function bindReports(){
+  const info = $('#reportInfo');
+  if(info) info.textContent = state.job ? 'Ready · last job ' + state.job.slice(0,8) : 'No investigation loaded.';
+  const md = $('#expMd'); if(md) md.onclick = () => download('md');
+  const js = $('#expJson'); if(js) js.onclick = () => download('json');
+  const pr = $('#expPrint'); if(pr) pr.onclick = () => window.print();
+}
+function download(fmt){
+  if(!state.job) return notify('run an ai investigation first', 'bad');
+  window.location.href = '/api/ai/report?job=' + state.job + '&fmt=' + fmt;
+}
+
+/* ── Catalog / Modules ── */
+async function loadCatalog(){
+  try{
+    const j = await api('/api/catalog');
+    state.catalog = j.mods || [];
+  }catch(e){}
+}
+async function loadModules(listSel, infoSel){
+  if(!state.catalog.length) await loadCatalog();
+  const info = $(infoSel);
+  if(info) info.textContent = state.catalog.length + ' modules online';
+  const list = $(listSel);
+  if(!list) return;
+  list.innerHTML = state.catalog.map(m =>
+    `<div class="mod">
+      <b>${esc(m.label)}</b><small>${esc(m.why)}</small>
+      <span class="cat">${esc(m.category)}</span>
+    </div>`).join('');
+}
+
+/* ── Settings ── */
+function bindSettings(){
+  const acc = $('#setAccent');
+  if(acc){
+    acc.value = state.accent;
+    acc.oninput = e => { state.accent = e.target.value; applyTheme(); };
+  }
+  const fs = $('#setFs');
+  const fsVal = $('#setFsVal');
+  if(fs){
+    fs.value = state.fs;
+    fs.oninput = e => { state.fs = +e.target.value; if(fsVal) fsVal.textContent = state.fs; applyTheme(); };
+  }
+  const snd = $('#setSound');
+  if(snd){
+    snd.checked = state.sound;
+    snd.onchange = e => {
+      state.sound = e.target.checked;
+      Sound.setEnabled(state.sound);
+      if(state.sound){ Sound.ok(); notify('audio enabled','ok'); }
+      else notify('audio muted');
+    };
+  }
+  loadModules('#catList', '#catInfo');
+}
+function applyTheme(){
+  document.documentElement.style.setProperty('--accent', state.accent);
+  document.documentElement.style.setProperty('--fs', state.fs + 'px');
+  document.body.style.fontSize = state.fs + 'px';
+}
+
+/* ── Palette ── */
+const pal = $('#palette');
+const palInput = $('#palInput');
+const palList = $('#palList');
+let palItems = [], palSel = 0;
+
+function openPal(){
+  pal.classList.add('on');
+  palInput.value = '';
+  palItems = buildPalItems();
+  palSel = 0;
+  renderPal('');
+  palInput.focus();
+  Sound.open();
+}
+function closePal(){ pal.classList.remove('on'); }
+function buildPalItems(){
+  const items = TABS.map(t => ({label: t.label, kind:'tab', run: () => switchTab(t.id)}));
+  state.catalog.slice(0,100).forEach(m => items.push({
+    label: m.label || m.id, kind:'mod', hint: m.category,
+    run: () => { switchTab('scan'); }
+  }));
+  items.push({label:'Run AI investigation', kind:'action', run: () => { switchTab('ai'); }});
+  items.push({label:'Export markdown', kind:'action', run: () => download('md')});
+  items.push({label:'Export JSON', kind:'action', run: () => download('json')});
+  return items;
+}
+function renderPal(q){
+  const f = palItems.filter(i =>
+    i.label.toLowerCase().includes(q.toLowerCase()) ||
+    (i.hint||'').toLowerCase().includes(q.toLowerCase())
+  ).slice(0,40);
+  palList.innerHTML = f.map((i, idx) =>
+    `<li class="${idx===palSel?'on':''}" data-i="${palItems.indexOf(i)}">
+      <span>${esc(i.label)}</span>
+      <span class="k">${esc(i.kind)}${i.hint?' · '+esc(i.hint):''}</span>
+    </li>`).join('');
+  palList.querySelectorAll('li').forEach(li => {
+    li.onmouseenter = () => { palSel = +li.dataset.i; };
+    li.onclick = () => runPalItem(+li.dataset.i);
+  });
+}
+function runPalItem(i){
+  const item = palItems[i]; if(!item) return;
+  closePal();
+  try{ item.run(); }catch(e){ notify(e.message, 'bad'); }
+}
+
+/* ── Keyboard ── */
+document.addEventListener('keydown', e => {
+  if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k'){
+    e.preventDefault(); openPal(); return;
+  }
+  if(e.key === 'Escape'){ closePal(); return; }
+  if(pal.classList.contains('on')){
+    if(e.key === 'ArrowDown'){ e.preventDefault(); palSel++; renderPal(palInput.value); Sound.hover(); }
+    if(e.key === 'ArrowUp'){ e.preventDefault(); palSel = Math.max(0, palSel - 1); renderPal(palInput.value); Sound.hover(); }
+    if(e.key === 'Enter'){ e.preventDefault(); runPalItem(palSel); }
+  }
+  if(e.key === '/' && document.activeElement.tagName !== 'INPUT'){
+    e.preventDefault(); $('#q').focus();
+  }
+  // key ticks for typing
+  if(e.target.matches('input') && e.key.length === 1 && !e.ctrlKey && !e.metaKey){
+    Sound.key();
+  }
+});
+palInput && palInput.addEventListener('input', e => renderPal(e.target.value));
+
+/* global button click sound */
+document.addEventListener('click', e => {
+  const btn = e.target.closest('button');
+  if(btn) Sound.click();
+}, true);
+
+/* ── Top bar ── */
+$('#goScan').onclick = runScan;
+$('#q').addEventListener('keydown', e => { if(e.key === 'Enter') runScan(); });
+$('#goAI').onclick = () => {
+  const v = $('#q').value.trim();
+  switchTab('ai');
+  if(v){ const i = $('#aiq'); if(i) i.value = v; startAI(); }
+};
+$('#palBtn').onclick = openPal;
+
+/* ── Boot sequence ── */
+async function bootSequence(){
+  const log = $('#bootLog');
+  const lines = [
+    'initializing sector 7G archive…',
+    'loading module registry',
+    'establishing uplink',
+    'calibrating sensors',
+    'archive online'
+  ];
+  for(let i=0;i<lines.length;i++){
+    const d = document.createElement('div');
+    d.textContent = lines[i];
+    log.appendChild(d);
+    await new Promise(r => setTimeout(r, 130));
+  }
+  await new Promise(r => setTimeout(r, 260));
+  $('#boot').classList.add('off');
+  setTimeout(() => { const b = $('#boot'); if(b) b.remove(); }, 700);
+}
+
+/* ── Init ── */
+(async function init(){
+  // require user gesture before audio
+  const unlock = () => { Sound.init(); document.removeEventListener('click', unlock); document.removeEventListener('keydown', unlock); };
+  document.addEventListener('click', unlock);
+  document.addEventListener('keydown', unlock);
+
+  applyTheme();
+  buildSide();
+  switchTab('dashboard');
+
+  bootSequence();
+
+  await loadCatalog();
+  if(document.querySelector('#dCards')) loadDashboard();
+})();
+</script>
+</body>
+</html>
